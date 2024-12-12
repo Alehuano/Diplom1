@@ -3,13 +3,17 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, select, update, delete
 from typing import Annotated
 
+from db import SessionLocal
 from manager_m import Manager
 from task_m import Task
 from schemas import CreateTask, UpdateTask
 from db_depends import get_db
 
+import time
+
 router = APIRouter(prefix='/task', tags=['Задача'])
 
+session=SessionLocal()
 
 @router.get('/all_task')
 async def get_all_task(db: Annotated[Session, Depends(get_db)]):
@@ -19,6 +23,7 @@ async def get_all_task(db: Annotated[Session, Depends(get_db)]):
 
 @router.post('/create')
 async def create_task(db: Annotated[Session, Depends(get_db)], create_task: CreateTask, manager_id: int):
+
     manager = db.scalars(select(Manager).where(Manager.id == manager_id))
     if manager is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -65,3 +70,5 @@ async def delete_task(db: Annotated[Session, Depends(get_db)], task_id: int):
     db.commit()
     return {'status_code': status.HTTP_200_OK,
             'transaction': 'Задача успешно удалена'}
+
+

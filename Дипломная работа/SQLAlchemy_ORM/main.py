@@ -2,6 +2,8 @@ from fastapi import FastAPI
 import manager_r
 import task_r
 
+from task_m import Task
+
 app = FastAPI(title='Логистика SQLAlchemy ORM')
 
 
@@ -12,3 +14,4 @@ async def welcome():
 
 app.include_router(manager_r.router)
 app.include_router(task_r.router)
+
